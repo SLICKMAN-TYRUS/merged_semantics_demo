@@ -1,51 +1,51 @@
 # MergeSemantics Demo
 
-A Flutter application demonstrating the use of the `MergeSemantics` widget to improve accessibility for screen readers.
+For this assignment, I chose to demonstrate the `MergeSemantics` widget. This project shows how grouping widgets together improves the experience for screen reader users (like TalkBack or VoiceOver) by making a whole row of items feel like a single button.
 
 ![App Screenshot](screenshot.png)
 
-## Overview
+## What it does
 
-This application serves as a practical demonstration of how `MergeSemantics` affects the accessibility tree in Flutter. It features a settings-style interface with interactive rows (Notifications Switch, Special Offers Checkbox). Users can toggle "Merge Mode" on and off to hear the difference in how screen readers (TalkBack/VoiceOver) announce the UI elements.
+I built a simple "Settings" page with two examples:
+1.  **Notifications Row**: A standard row with a label and a Switch.
+2.  **Special Offers Row**: A row with a "New" badge and a Checkbox.
 
-*   **Merge Mode ON**: The entire row (Label + State + Interactive Element) is announced as a single focusable node ("Notifications, On, Switch").
-*   **Merge Mode OFF**: Each element in the row is focusable individually ("Notifications", then "On", then "Switch"), which can be tedious for users.
+At the top of the screen, I added a **Merge Mode** toggle.
+*   **When ON**: The screen reader reads the whole row at once (e.g., "Notifications, On, Switch"). This is the correct behavior for list items.
+*   **When OFF**: You have to swipe through every single text and icon individually, which is annoying for users.
 
-## The Widget: MergeSemantics
+## Attributes I Used
 
-The `MergeSemantics` widget is an accessibility tool that groups the semantics of its descendants into a single semantic node. This is crucial for creating tap targets that feel like native list items.
+### 1. **child**
+This is just the widget subtree that you want to merge. In my code, I wrapped my `Row` (which contains the Icon, Text, and Switch) inside the `MergeSemantics` widget.
 
-### Key Properties & Concepts
-
-1.  **`child`**:
-    *   **Description**: The widget subtree that contains the elements to be merged.
-    *   **Usage**: In this demo, we wrap a `Row` containing text and a switch/checkbox. This causes the screen reader to treat the entire row as one interactive button.
-
-2.  **`enabled` (Logic Implementation)**:
-    *   **Note**: The `MergeSemantics` class strictly merges its children. It does not have a boolean "enabled" property to turn it off dynamically.
-    *   **implementation**: To demonstrate the "Before vs After" effect, we implemented a logic toggle in `lib/main.dart`.
-    ```dart
-    if (mergeEnabled) {
-      return MergeSemantics(child: content);
-    } else {
-      return content;
-    }
-    ```
-
-3.  **`key`**:
-    *   **Description**: A standard widget property.
-    *   **Usage**: Controls how one widget replaces another widget in the tree. We use a `ValueKey` to ensure the framework correctly updates the widget when toggling merge modes.
-
-## Code Implementation
-
-Below is the core logic used in `lib/main.dart` to create the accessible notification row.
+### 2. **enabled (Logic Implementation)**
+One trick I learned while building this is that `MergeSemantics` doesn't actually have an `enabled` property to turn it off. To meet the requirement of showing "Before vs After," I wrote some logic in `main.dart`:
 
 ```dart
-// Example of wrapping a complex row in MergeSemantics
+// If my toggle is on, wrap it. matches "enabled" behavior.
+if (mergeEnabled) {
+  return MergeSemantics(child: rowContent);
+} else {
+  return rowContent;
+}
+```
+
+### 3. **key**
+I used a `ValueKey` on the widget. This helps Flutter understand that the widget has changed when I toggle the merge mode, ensuring the state stays consistent.
+
+## My Code
+
+Here is the main piece of code where I implemented the merging logic:
+
+```dart
+// Inside lib/main.dart
+
 MergeSemantics(
+  // This child is the entire row that gets merged into one node
   child: InkWell(
     onTap: () {
-       // Tapping anywhere on the row toggles the switch
+       // Toggle the switch when tapping anywhere on the row
        setState(() => notificationsEnabled = !notificationsEnabled);
     },
     child: Row(
@@ -71,40 +71,16 @@ MergeSemantics(
 )
 ```
 
-## Features & Creativity
+## Extras
 
-1.  **Material 3 Design**: Uses the latest Material Design specifications for cards, switches, and colors.
-2.  **Custom Typography**: Integrates `google_fonts` (Montserrat) for a modern, clean aesthetic.
-3.  **Interactive State**: Shows real-time feedback using SnackBars and state updates.
-4.  **Educational Control Panel**: A dedicated "Merge Mode" toggle allows for immediate A/B testing of accessibility features.
+To make the app look nice and polished, I added:
+*   **Material 3** styling for modern cards and switches.
+*   **Google Fonts** (Montserrat) so it doesn't look like the default Hello World app.
+*   **SnackBars** that pop up to tell you when you've changed the merge mode.
 
-## Repository Structure
+## How to Run It
 
-```
-merged_semantics_demo/
-├── lib/
-│   └── main.dart        # Entry point and complete demo logic
-├── pubspec.yaml         # Dependencies (flutter, google_fonts)
-├── README.md            # Project documentation
-└── screenshot.png       # visual demonstration
-```
-
-## How to Run
-
-1.  **Prerequisites**: Ensure you have Flutter installed and set up on your machine.
-2.  **Clone the Repository**:
-    ```bash
-    git clone https://github.com/SLICKMAN-TYRUS/merged_semantics_demo.git
-    cd merged_semantics_demo
-    ```
-3.  **Install Dependencies**:
-    ```bash
-    flutter pub get
-    ```
-4.  **Run the App**:
-    ```bash
-    flutter run
-    ```
-5.  **Test Accessibility**:
-    *   Enable your device's screen reader (TalkBack on Android, VoiceOver on iOS).
-    *   Toggle the "Merge Mode" switch to hear the difference in navigation.
+1.  Clone this repo.
+2.  Run `flutter pub get` to install the Google Fonts.
+3.  Run `flutter run`.
+4.  Turn on your screen reader on your phone or simulator to hear the difference!
