@@ -7,20 +7,20 @@ For this assignment, I chose to demonstrate the `MergeSemantics` widget. This pr
 ## What it does
 
 I built a simple "Settings" page with two examples:
-1.  **Notifications Row**: A standard row with a label and a Switch.
-2.  **Special Offers Row**: A row with a "New" badge and a Checkbox.
+1.  Notifications Row: A standard row with a label and a Switch.
+2.  Special Offers Row: A row with a "New" badge and a Checkbox.
 
-At the top of the screen, I added a **Merge Mode** toggle.
-*   **When ON**: The screen reader reads the whole row at once (e.g., "Notifications, On, Switch"). This is the correct behavior for list items.
-*   **When OFF**: You have to swipe through every single text and icon individually, which is annoying for users.
+At the top of the screen, I added a Merge Mode toggle.
+-   When ON: The screen reader reads the whole row at once (e.g., "Notifications, On, Switch"). This is the correct behavior for list items.
+-   When OFF: You have to swipe through every single text and icon individually, which is annoying for users.
 
 ## Attributes I Used
 
-### 1. **child**
+### 1. child
 This is just the widget subtree that you want to merge. In my code, I wrapped my `Row` (which contains the Icon, Text, and Switch) inside the `MergeSemantics` widget.
 
-### 2. **enabled (Logic Implementation)**
-One trick I learned while building this is that `MergeSemantics` doesn't actually have an `enabled` property to turn it off. To meet the requirement of showing "Before vs After," I wrote some logic in `main.dart`:
+### 2. enabled (Logic Implementation)
+One trick I learned while building this is that `MergeSemantics` doesn't actually have an "enabled" property to turn it off. To meet the requirement of showing "Before vs After," I wrote some logic in `main.dart`:
 
 ```dart
 // If my toggle is on, wrap it. matches "enabled" behavior.
@@ -31,7 +31,7 @@ if (mergeEnabled) {
 }
 ```
 
-### 3. **key**
+### 3. key
 I used a `ValueKey` on the widget. This helps Flutter understand that the widget has changed when I toggle the merge mode, ensuring the state stays consistent.
 
 ## My Code
@@ -74,9 +74,9 @@ MergeSemantics(
 ## Extras
 
 To make the app look nice and polished, I added:
-*   **Material 3** styling for modern cards and switches.
-*   **Google Fonts** (Montserrat) so it doesn't look like the default Hello World app.
-*   **SnackBars** that pop up to tell you when you've changed the merge mode.
+-   Material 3 styling for modern cards and switches.
+-   Google Fonts (Montserrat) so it doesn't look like the default Hello World app.
+-   SnackBars that pop up to tell you when you've changed the merge mode.
 
 ## How to Run It
 
